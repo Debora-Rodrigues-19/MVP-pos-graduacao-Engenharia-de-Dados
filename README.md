@@ -1,4 +1,4 @@
-# MVP-pos-graduacao-Engenharia-de-Dados
+# MVP-pos-graduacao-PUC-Engenharia-de-Dados
 Repositorio para trazer o trabalho de MVP de Engenharia de Dados feito no Databricks
 
 # Pipeline de Análise de Preços de Combustíveis no Varejo Nacional (Medallion Architecture)
