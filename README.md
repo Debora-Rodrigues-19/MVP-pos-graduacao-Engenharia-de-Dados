@@ -9,7 +9,7 @@ Repositorio para trazer o trabalho de MVP de Engenharia de Dados feito no Databr
 [![Python](https://img.shields.io/badge/Python-3.x-yellow?logo=python)](https://www.python.org/)
 
 ## 📌 Visão Geral do Projeto
-Este projeto consiste na implementação de um pipeline de dados *end-to-end* em ambiente de nuvem (**Databricks**) para ingestão, tratamento e modelagem do histórico de preços de combustíveis (Gasolina Comum e Etanol) no Brasil, utilizando dados abertos fornecidos pela **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)**.
+Este projeto consiste na implementação de um pipeline de dados *end-to-end* em ambiente de nuvem (**Databricks**) para ingestão, tratamento e modelagem do histórico de preços de combustíveis (Gasolina e Etanol) no Brasil, utilizando dados abertos fornecidos pela **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)**.
 
 O objetivo principal é transformar dados brutos não estruturados/semistruturados em dados analíticos confiáveis, organizados em uma **Arquitetura Medalhão (Bronze, Silver e Gold)** sob o formato **Delta Lake**, respondendo a hipóteses estratégicas de precificação regional e paridade de mercado.
 
