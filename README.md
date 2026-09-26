@@ -15,6 +15,16 @@ O objetivo principal é transformar dados brutos não estruturados/semistruturad
 
 ---
 
+> 💡 **Evolução do Escopo & Pivot Técnico**
+> 
+> **Escopo Inicial:** A proposta original visava analisar a distribuição e suficiência das verbas governamentais repassadas aos municípios de Rondônia, correlacionando repasses financeiros com indicadores socioeconômicos (IDH, infraestrutura escolar, população em situação de rua, mobilidade, etc.).
+> 
+> **Motivação do Pivot (Análise de Viabilidade Técnica):** Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma alta complexidade na harmonização dos dados. Responder à pergunta exigiria a integração de múltiplos eixos de desenvolvimento urbano (*Infraestrutura, Qualidade de Vida, Economia, entre outros...*) com fontes de **diferentes granularidades e domínios heterogêneos**. Para evitar um cenário de *Scope Creep* e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão, optou-se pela revisão do escopo.
+> 
+> **Escopo Atualizado:** O pipeline foi redirecionado para o setor de combustíveis (ANP), com foco na análise temporal de preços (Gasolina e Etanol), paridade econômica por UF e variação por bandeiras. Essa escolha permitiu construir um MVP *end-to-end* robusto no Databricks, cobrindo todo o ciclo de vida do dado (Bronze, Silver e Gold) com elevado rigor de tipagem, limpeza e agregabilidade.
+
+---
+
 ## 🎯 Problema & Perguntas de Negócio
 
 O pipeline foi desenhado para processar os volumes históricos da ANP e responder às seguintes perguntas analíticas:
