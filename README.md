@@ -102,7 +102,7 @@ graph TD
     style D fill:#1a202c,stroke:#718096,color:#fff
 ```
 
-![Print do Catalog](./images/Print-databricks-catalog.png)
+![Print do Catalog](dados-brutos/Print-databricks-catalog.png)
 ##### Descrição da imagem: Print do *Databricks Catalog* com os dados brutos (em laranja) e dados silver (em verde) e dados gold (em azul).
 ---
 
