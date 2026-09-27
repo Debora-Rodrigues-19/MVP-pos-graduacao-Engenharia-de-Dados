@@ -347,6 +347,23 @@ O encerramento automático de *clusters* inativos no ambiente gratuito exigiu a 
 ---
 
 ### 🔮 7.3 Trabalhos Futuros
-1. **Orquestração Automatizada:** Agendar execuções periódicas do pipeline utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
-2. **Visualização Interativa:** Conectar as tabelas da camada Gold diretamente ao **Power BI** ou **Databricks SQL Dashboards**.
-3. **Modelagem Preditiva (ML):** Aplicar algoritmos de aprendizado de máquina (PySpark MLlib) para prever tendências e oscilações de preços nas UFs com 30 dias de antecedência.
+
+1. **Orquestração Automatizada (Databricks Workflows / DLT):**
+   * Agendamento automático das cargas à medida que a ANP divulga novos dados[cite: 2].
+   * Configuração de alertas (E-mail/Teams) em caso de falhas no pipeline ou latência[cite: 2].
+
+2. **Governança e Qualidade com Unity Catalog:**
+   * Aplicação de regras automáticas de validação (ex: bloquear preços fora da faixa de R$ 2,00 a R$ 15,00)[cite: 2].
+   * Rastreabilidade completa dos dados (*Data Lineage*) da origem ao relatório final[cite: 2].
+
+3. **Dashboards e BI Executivo (Databricks SQL / Power BI):**
+   * Criação de painéis interativos em tempo real com mapas de calor por UF e rankings por bandeira[cite: 2].
+   * Conexão via *DirectQuery* para suporte rápido à tomada de decisão de gestores e frotistas[cite: 2].
+
+4. **Cruzamento com Dados Macroconômicos:**
+   * Ingestão via API de dados do Petróleo Brent, Dólar (USD/BRL), IPCA e alíquotas estaduais de ICMS[cite: 2].
+   * Identificação das causas reais das altas de preços (se internacionais, inflacionárias ou fiscais)[cite: 2].
+
+5. **Modelagem Preditiva e Detecção de Anomalias (PySpark MLlib):**
+   * Modelos de séries temporais para prever oscilações de preços com 30 dias de antecedência[cite: 2].
+   * Algoritmos de clustering (*Isolation Forest*) para identificar postos com comportamentos suspeitos ou abusivos[cite: 2].
