@@ -5,5 +5,5 @@
 
 Nessa pasta, temos a versão **CSV** importada diretamente no GitHub e também a versão completa disponível no **Google Drive**.
 
-* 📄 **Versão Local (GitHub):** Ficheiros CSV armazenados diretamente no repositório.
+* 📄 **Versão Local (GitHub):** Arquivos CSV zipados e armazenados diretamente no repositório.
 * ☁️ **Versão Google Drive:** [Acessar Pasta no Google Drive](https://drive.google.com/drive/folders/1mgSmU7R8lmSDwd8-WktPz0FATSSuUHEi?usp=sharing) *(Permissão: Qualquer pessoa com o link pode ler)*
