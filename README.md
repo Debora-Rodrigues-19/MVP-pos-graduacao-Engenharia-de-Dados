@@ -99,8 +99,7 @@ graph TD
     style D fill:#1a202c,stroke:#718096,color:#fff
 ```
 
-![Print do Catalog com os dados brutos (laranja) e dados tratados (silver e gold) ](./images/Print1-Catalog.png)
-
+![Print do Catalog com os dados brutos (laranja) e dados silver (verde) e dados para análise (gold)](./dados-brutos/Print%20Databricks%20(2).png)
 
 ---
 
