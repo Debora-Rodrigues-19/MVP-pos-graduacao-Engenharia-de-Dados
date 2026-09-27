@@ -189,7 +189,7 @@ O pipeline de dados foi desenvolvido de forma modular em **2 Notebooks PySpark**
 ---
 
 4.1.2. **Notebook 2 — Analytics & Agregações (Silver -> Gold):**
-   * **Arquivo:** [`Etapa 2 - Analitica.ipynb`](./Etapa%202%20-%20Analitica.ipynb)
+   * **Arquivo:** [`Etapa 2 - Analitica.ipynb`](./Etapa%202%20-%20Analise%20Geral%20-%20GOLD.ipynb)
    * **Fluxo:** Leitura da tabela `base_combustivel_silver` -> Execução de queries analíticas com Window Functions e pivots -> Persistência das tabelas analíticas Delta `combustivel_variacao_gold`, `combustivel_paridade_gold` e `combustivel_bandeira_gold`.
 
 ![Print do Etapa 3 - tbl1](dados-brutos/Print-saida-tbl1-gold.png)
