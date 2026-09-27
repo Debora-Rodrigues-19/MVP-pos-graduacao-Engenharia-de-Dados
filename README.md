@@ -10,7 +10,7 @@
 ## 1. Contexto de Negócio e Pergunta
 
 ### 1.1 Visão Geral e Problema de Negócio
-O mercado varejista de combustíveis no Brasil (Gasolina Comum e Etanol Hidratado) é caracterizado por expressiva volatilidade e assimetria regional de preços. Fatores como distância dos centros produtores/refinarias, alíquotas estaduais de impostos (ICMS), concorrência local entre distribuidoras e flutuações nas cotações internacionais geram variações substanciais de preços entre Unidades da Federação (UFs) e bandeiras de postos.
+O mercado varejista de combustíveis no Brasil (Gasolina Comum e Etanol) é caracterizado por expressiva volatilidade e assimetria regional de preços. Fatores como distância dos centros produtores/refinarias, alíquotas estaduais de impostos (ICMS), concorrência local entre distribuidoras e flutuações nas cotações internacionais geram variações substanciais de preços entre Unidades da Federação (UFs) e bandeiras de postos.
 
 Este projeto tem como objetivo a construção de um **pipeline de dados end-to-end em nuvem (Databricks)** sob a **Arquitetura Medalhão (Delta Lake)**, transformando o histórico bruto de pesquisas semanais de preços da **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)** em tabelas analíticas refinadas para suporte à tomada de decisão.
 
@@ -19,7 +19,7 @@ Este projeto tem como objetivo a construção de um **pipeline de dados end-to-e
 ### 1.2 Perguntas de Negócio
 O pipeline foi projetado para responder às seguintes perguntas analíticas estratégicas:
 
-1. **Variação Temporal e Geográfica:** Qual é a variação média mensal do preço de venda da Gasolina Comum e do Etanol Hidratado discriminada por Estado (UF) e período (Mês/Ano), medindo a evolução MoM (*Month-over-Month*)?
+1. **Variação Temporal e Geográfica:** Qual é a variação média mensal do preço de venda da Gasolina Comum e do Etanol discriminada por Estado (UF) e período (Mês/Ano), medindo a evolução MoM (*Month-over-Month*)?
 2. **Paridade de Mercado (Etanol vs. Gasolina):** Qual é a razão percentual ($\frac{\text{Preço Médio Etanol}}{\text{Preço Médio Gasolina}} \times 100$) por UF e qual a recomendação de viabilidade econômica ao consumidor com base no limiar de eficiência de 70%?
 3. **Dispersão e Volatilidade por Bandeiras:** Quais distribuidoras e bandeiras (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentam maior volatilidade (desvio padrão e amplitude de preço) por região geográfica?
 
@@ -232,7 +232,7 @@ Para garantir que a camada analítica (Gold) receba apenas dados íntegros, conf
 
 4. **Acurácia (Accuracy):**
    * *Diagnóstico:* Presença de produtos fora do foco da pesquisa (ex: `DIESEL S10`, `GNV`) e valores de venda nulos ou zerados.
-   * *Ação:* Filtragem estrita dos registros de interesse mantendo apenas `GASOLINA` (Comum) e `ETANOL` (Hidratado) com valores numéricos de venda estritamente positivos.
+   * *Ação:* Filtragem estrita dos registros de interesse mantendo apenas `GASOLINA` (Comum) e `ETANOL` com valores numéricos de venda estritamente positivos.
 
 5. **Outliers:**
    * *Diagnóstico:* Verificação de discrepâncias extremas nos preços de venda.
