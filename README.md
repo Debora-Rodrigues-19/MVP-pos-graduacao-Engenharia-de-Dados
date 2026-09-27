@@ -1,4 +1,4 @@
-# MVP - Pós-Graduação em Engenharia de Dados (PUC-Rio)
+# 🚚 MVP - Pós-Graduação em Engenharia de Dados (PUC-Rio)
 
 [![Databricks](https://img.shields.io/badge/Databricks-Free%20Edition-red?logo=databricks)](https://databricks.com/)
 [![Apache Spark](https://img.shields.io/badge/Apache%20Spark-3.x-orange?logo=apachespark)](https://spark.apache.org/)
@@ -7,77 +7,66 @@
 
 ---
 
-## 1. Contexto de Negócio e Pergunta
+## 📌 1. Contexto de Negócio e Perguntas
 
-### 1.1 Visão Geral e Problema de Negócio
-O mercado varejista de combustíveis no Brasil (Gasolina Comum e Etanol) é caracterizado por expressiva volatilidade e assimetria regional de preços. Fatores como distância dos centros produtores/refinarias, alíquotas estaduais de impostos (ICMS), concorrência local entre distribuidoras e flutuações nas cotações internacionais geram variações substanciais de preços entre Unidades da Federação (UFs) e bandeiras de postos.
+### 1.1 O Problema de Negócio
+Abastecer o carro no Brasil pode custar muito diferente a depender de onde você está. O mercado varejista de combustíveis — focado aqui em **Gasolina Comum e Etanol** — é marcado por preços imprevisíveis e fortes diferenças regionais. Fatores como a distância das refinarias, impostos estaduais (ICMS), concorrência local e oscilações do petróleo no mercado internacional fazem com que os preços variem muito entre estados e marcas de postos.
 
-Este projeto tem como objetivo a construção de um **pipeline de dados end-to-end em nuvem (Databricks)** sob a **Arquitetura Medalhão (Delta Lake)**, transformando o histórico bruto de pesquisas semanais de preços da **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)** em tabelas analíticas refinadas para suporte à tomada de decisão.
-
----
-
-### 1.2 Perguntas de Negócio
-O pipeline foi projetado para responder às seguintes perguntas analíticas estratégicas:
-
-1. **Variação Temporal e Geográfica:**Qual é a variação média mensal do preço de venda da Gasolina Comum e do Etanol discriminada por Estado (UF) e período (Mês/Ano), medindo a evolução MoM (*Month-over-Month*)?
-3. **Paridade de Mercado (Etanol vs. Gasolina):**Qual é a razão percentual ($\frac{\text{Preço Médio Etanol}}{\text{Preço Médio Gasolina}} \times 100$) por UF e qual a recomendação de viabilidade econômica ao consumidor com base no limiar de eficiência de 70%?
-5. **Dispersão e Volatilidade por Bandeiras:**Quais distribuidoras e bandeiras (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentam maior volatilidade (desvio padrão e amplitude de preço) por região geográfica?
+**Como resolver isso com dados?**
+Para trazer clareza a esse cenário, este projeto construiu um **pipeline de dados em nuvem (Databricks)** estruturado sob a **Arquitetura Medalhão (Delta Lake)**. O objetivo foi transformar mais de 3 milhões de registros brutos das pesquisas semanais da **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)** em tabelas analíticas prontas para orientar decisões estratégicas.
 
 ---
 
-### 1.3 Estrutura e Resumo dos Dados Brutos
-Os dados brutos foram extraídos da página oficial de Dados Abertos da ANP (*Série Histórica de Preços de Combustíveis*), abrangendo coletas semestrais contínuas entre **2023/1 e 2026/1**.
+### 1.2 Perguntas que Queremos Responder
+Para garantir que o pipeline entregasse valor real, ele foi desenhado focado em responder a três perguntas principais:
 
-* **Volume Total Ingerido:** 3.038.685 registros brutos.
-* **Número de Atributos Originais:** 16 colunas.
-* **Formato do Arquivo:** CSV (Codificação `ISO-8859-1`, Separador `;`, com cabeçalho).
+1. **Variação no Tempo e no Espaço (MoM):** Como o preço médio da Gasolina e do Etanol mudou mês a mês em cada Estado (UF)?
+2. **Qual Combustível Compensou Mais?** Qual foi a paridade média de preço entre Etanol e Gasolina ($\frac{\text{Preço Etanol}}{\text{Preço Gasolina}} \times 100$) por estado, considerando a regra prática de eficiência de 70%?
+3. **Quem Cobra Mais Variado?** Quais redes e bandeiras de postos (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentaram maior variação e instabilidade de preços em cada região?
 
-#### Atributos do Conjunto Bruto:
-1. `Regiao - Sigla`: Sigla da região geográfica (CO, N, NE, S, SE).
-2. `Estado - Sigla`: Sigla da UF (27 UFs).
-3. `Municipio`: Nome do município da coleta.
-4. `Revenda`: Razão social do posto revendedor.
-5. `CNPJ da Revenda`: CNPJ formatado do estabelecimento.
-6. `Nome da Rua`: Logradouro do posto.
-7. `Numero Rua`: Número do endereço do posto.
-8. `Complemento`: Complemento do endereço do posto.
+---
+
+### 1.3 De Onde Vieram os Dados?
+Os dados brutos foram extraídos do portal oficial de Dados Abertos da ANP, cobrindo o histórico semestral de pesquisas entre **2023/1 e 2026/1**.
+
+* **Volume de Dados:** 3.038.685 de registros.
+* **Quantidade de Colunas:** 16 atributos na base original.
+* **Formato:** Arquivos CSV (codificados em `ISO-8859-1`, separados por `;`).
+
+#### O que Cada Campo Representa:
+1. `Regiao - Sigla`: Região do país (`CO`, `N`, `NE`, `S`, `SE`).
+2. `Estado - Sigla`: Sigla do estado (27 UFs).
+3. `Municipio`: Nome do município da pesquisa.
+4. `Revenda`: Nome/Razão social do posto.
+5. `CNPJ da Revenda`: CNPJ do estabelecimento.
+6. `Nome da Rua`: Logradouro.
+7. `Numero Rua`: Número do imóvel.
+8. `Complemento`: Informações adicionais do endereço.
 9. `Bairro`: Bairro do posto.
-10. `Cep`: Código de Endereçamento Postal do posto.
-11. `Produto`: Tipo de combustível (`GASOLINA`, `GASOLINA ADITIVADA`, `ETANOL`, `DIESEL`, `DIESEL S10`, `GNV`).
-12. `Data da Coleta`: Data no formato texto `DD/MM/AAAA`.
-13. `Valor de Venda`: Preço de venda ao consumidor final (texto com vírgula).
-14. `Valor de Compra`: Preço de compra pelo posto (texto com vírgula ou nulo).
-15. `Unidade de Medida`: Unidade (ex: `R$ / litro`).
-16. `Bandeira`: Distribuidora/Bandeira vinculada ao posto.
+10. `Cep`: Código de Endereçamento Postal.
+11. `Produto`: Combustível pesquisado (`GASOLINA`, `GASOLINA ADITIVADA`, `ETANOL`, `DIESEL`, `DIESEL S10`, `GNV`).
+12. `Data da Coleta`: Data do registro no formato `DD/MM/AAAA`.
+13. `Valor de Venda`: Preço cobrado do consumidor final (texto com vírgula).
+14. `Valor de Compra`: Preço pago pelo posto à distribuidora (quando disponível).
+15. `Unidade de Medida`: Unidade do preço (ex: `R$ / litro`).
+16. `Bandeira`: Marca ou distribuidora ligada ao posto.
 
 ---
 
-### 1.4 Licença dos Dados
-* **Fonte Oficial:** Portal de Dados Abertos do Governo Federal do Brasil / Agência Nacional do Petróleo, Gás Natural e Biocombustíveis (ANP).
-* **Link de Acesso:** [ANP - Série Histórica de Preços de Combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis)
-* **Termos de Licenciamento:** Dados públicos governamentais sob a Política de Dados Abertos do Poder Executivo Federal (Decreto nº 8.777/2016), de livre acesso, reutilização e distribuição para fins acadêmicos e comerciais, desde que citada a fonte original.
+### 1.4 Licença de Uso
+* **Fonte:** Portal de Dados Abertos do Governo Federal / ANP.
+* **Acesso:** [ANP - Série Histórica de Preços de Combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis)
+* **Termos de Licença:** Dados públicos alinhados à Política de Dados Abertos (Decreto nº 8.777/2016). Podem ser livremente reutilizados e compartilhados para fins acadêmicos ou comerciais, exigindo apenas a citação da fonte.
 
 ---
 
-## 2. Carga dos Dados
+## ☁️ 2. Como os Dados Chegaram à Nuvem
 
-### 2.1 Processo de Ingestão na Nuvem
-A carga dos dados brutos foi realizada no ambiente de nuvem **Databricks Free Edition**, utilizando os **Volumes do Unity Catalog** como armazenamento seguro e centralizado do Data Lakehouse.
+### 2.1 Processo de Carga
+Todos os arquivos brutos foram carregados no ambiente **Databricks Free Edition**, utilizando os **Volumes do Unity Catalog** como ponto central de armazenamento do nosso Data Lakehouse.
 
-* **Diretório de Origem (Volume Databricks):** `/Volumes/workspace/mvp-engenharia-dados/base-combustivel/*.csv`
-* **Mecanismo de Ingestão:** Leitura unificada em lote (*batch processing*) utilizando leitor nativo PySpark com tratamento explícito de codificação de texto e caracteres curinga (*wildcards*).
-
-### 2.2 Trecho do Script de Carga (em PySpark)
-```python
-# Leitura dos arquivos CSV semestrais contidos no Volume do Unity Catalog
-df_base_combustivel_brasil = spark.read \
-    .option("header", "true") \
-    .option("sep", ";") \
-    .option("encoding", "ISO-8859-1") \
-    .csv("/Volumes/workspace/mvp-engenharia-dados/base-combustivel/*.csv")
-```
-
-* **Script de Referência:** [`Etapa 1 - Limpeza e Padronização dos dados.ipynb`](./Etapa%201%20-%20Limpeza%20e%20Padronização%20dos%20dados.ipynb)
+* **Caminho no Databricks:** `/Volumes/workspace/mvp-engenharia-dados/base-combustivel/*.csv`
+* **Como foi feito:** Leitura automatizada em lote (*batch processing*) via PySpark, já configurando a codificação correta e unificando todos os arquivos CSV semestrais de uma só vez.
 
 ---
 
