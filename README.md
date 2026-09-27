@@ -1,4 +1,4 @@
-# 🚚 MVP - Pós-Graduação em Engenharia de Dados (PUC-Rio)
+# ⛽💵🚗 MVP - Pós-Graduação em Engenharia de Dados (PUC-Rio)
 
 [![Databricks](https://img.shields.io/badge/Databricks-Free%20Edition-red?logo=databricks)](https://databricks.com/)
 [![Apache Spark](https://img.shields.io/badge/Apache%20Spark-3.x-orange?logo=apachespark)](https://spark.apache.org/)
