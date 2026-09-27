@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Contexto de Negócio e Perguntas (Etapas 2 e 4.1)
+## 1. Contexto de Negócio e Pergunta
 
 ### 1.1 Visão Geral e Problema de Negócio
 O mercado varejista de combustíveis no Brasil (Gasolina Comum e Etanol Hidratado) é caracterizado por expressiva volatilidade e assimetria regional de preços. Fatores como distância dos centros produtores/refinarias, alíquotas estaduais de impostos (ICMS), concorrência local entre distribuidoras e flutuações nas cotações internacionais geram variações substanciais de preços entre Unidades da Federação (UFs) e bandeiras de postos.
@@ -59,7 +59,7 @@ Os dados brutos foram extraídos da página oficial de Dados Abertos da ANP (*S�
 
 ---
 
-## 2. Carga dos Dados (Etapa 4.2)
+## 2. Carga dos Dados
 
 ### 2.1 Processo de Ingestão na Nuvem
 A carga dos dados brutos foi realizada no ambiente de nuvem **Databricks Free Edition**, utilizando os **Volumes do Unity Catalog** como armazenamento seguro e centralizado do Data Lakehouse.
@@ -67,7 +67,7 @@ A carga dos dados brutos foi realizada no ambiente de nuvem **Databricks Free Ed
 * **Diretório de Origem (Volume Databricks):** `/Volumes/workspace/mvp-engenharia-dados/base-combustivel/*.csv`
 * **Mecanismo de Ingestão:** Leitura unificada em lote (*batch processing*) utilizando leitor nativo PySpark com tratamento explícito de codificação de texto e caracteres curinga (*wildcards*).
 
-### 2.2 Trecho do Script de Carga (PySpark)
+### 2.2 Trecho do Script de Carga (em PySpark)
 ```python
 # Leitura dos arquivos CSV semestrais contidos no Volume do Unity Catalog
 df_base_combustivel_brasil = spark.read \
@@ -81,7 +81,7 @@ df_base_combustivel_brasil = spark.read \
 
 ---
 
-## 3. Modelagem e Catálogo de Dados (Etapa 4.3)
+## 3. Modelagem e Catálogo de Dados
 
 ### 3.1 Arquitetura Medalhão (Lakehouse)
 A modelagem dos dados adota o padrão **Arquitetura Medalhão** sobre a tecnologia **Delta Lake**, dividida em três camadas incrementais:
@@ -178,7 +178,7 @@ graph TD
 
 ---
 
-## 4. Pipeline de Dados (Etapa 4.4)
+## 4. Pipeline de Dados
 
 ### 4.1 Estrutura do Pipeline de ETL
 O pipeline de dados foi desenvolvido de forma modular em **2 Notebooks PySpark** que executam o ciclo completo de extração, limpeza, modelagem e persistência:
@@ -191,7 +191,7 @@ O pipeline de dados foi desenvolvido de forma modular em **2 Notebooks PySpark**
    * **Arquivo:** [`Etapa 2 - Analitica.ipynb`](./Etapa%202%20-%20Analitica.ipynb)
    * **Fluxo:** Leitura da tabela `base_combustivel_silver` -> Execução de queries analíticas com Window Functions e pivots -> Persistência das tabelas analíticas Delta `combustivel_variacao_gold`, `combustivel_paridade_gold` e `combustivel_bandeira_gold`.
 
-### 4.2 Persistência de Dados em Nuvem (Delta Lake)
+### 4.2 Persistência de Dados em Nuvem
 Os DataFrames resultantes foram salvos como tabelas gerenciadas em formato **Delta Lake** no catálogo `workspace.mvp-engenharia-dados` no Databricks Unity Catalog:
 
 ```python
@@ -212,7 +212,7 @@ df_gold_variacao_combustiveis.write \
 
 ---
 
-## 5. Qualidade de Dados (Etapa 4.5)
+## 5. Qualidade de Dados
 
 Para garantir que a camada analítica (Gold) receba apenas dados íntegros, confiáveis e coerentes, o pipeline realizou auditorias sobre **5 dimensões da Qualidade de Dados**:
 
@@ -249,7 +249,7 @@ Para garantir que a camada analítica (Gold) receba apenas dados íntegros, conf
 
 ---
 
-## 6. Análise de Dados (Etapa 4.5)
+## 6. Análise de Dados
 
 ### 6.1 Respostas às Perguntas de Negócio
 
