@@ -71,7 +71,7 @@ Todos os arquivos brutos foram carregados no ambiente **Databricks Free Edition*
 
 ---
 
-## 3. Modelagem e Catálogo de Dados
+## 🏛️ 3. Modelagem e Catálogo de Dados
 
 ### 3.1 Arquitetura Medalhão (Lakehouse)
 A modelagem dos dados adota o padrão **Arquitetura Medalhão** sobre a tecnologia **Delta Lake**, dividida em três camadas incrementais:
@@ -103,7 +103,7 @@ graph TD
 
 ### 3.2 Catálogo de Dados Transcrito
 
-#### 1. Tabela Silver: `workspace.mvp-engenharia-dados.base_combustivel_silver`
+#### 3.2.1. Tabela Silver: `workspace.mvp-engenharia-dados.base_combustivel_silver`
 * **Contexto:** Tabela higienizada e tipada contendo os registros individuais de coleta para os produtos Gasolina e Etanol.
 
 | Nome do Campo | Descrição do Campo | Tipo de Dado | Domínio de Valores / Intervalo | Linhagem / Origem |
@@ -126,7 +126,7 @@ graph TD
 
 ---
 
-#### 2. Tabela Gold 1: `workspace.mvp-engenharia-dados.combustivel_variacao_gold`
+#### 3.2.2. Tabela Gold 1: `workspace.mvp-engenharia-dados.combustivel_variacao_gold`
 * **Contexto:** Média mensal de preços e variação percentual mês a mês (MoM) por Estado e Produto.
 
 | Nome do Campo | Descrição do Campo | Tipo de Dado | Domínio de Valores / Intervalo | Linhagem / Origem |
@@ -140,7 +140,7 @@ graph TD
 
 ---
 
-#### 3. Tabela Gold 2: `workspace.mvp-engenharia-dados.combustivel_paridade_gold`
+#### 3.2.3. Tabela Gold 2: `workspace.mvp-engenharia-dados.combustivel_paridade_gold`
 * **Contexto:** Análise de paridade econômica entre Etanol e Gasolina por UF e indicação de consumo.
 
 | Nome do Campo | Descrição do Campo | Tipo de Dado | Domínio de Valores / Intervalo | Linhagem / Origem |
@@ -153,7 +153,7 @@ graph TD
 
 ---
 
-#### 4. Tabela Gold 3: `workspace.mvp-engenharia-dados.combustivel_bandeira_gold`
+#### 3.2.4. Tabela Gold 3: `workspace.mvp-engenharia-dados.combustivel_bandeira_gold`
 * **Contexto:** Estatística descritiva de amplitude e volatilidade de preços por Bandeira e Região.
 
 | Nome do Campo | Descrição do Campo | Tipo de Dado | Domínio de Valores / Intervalo | Linhagem / Origem |
@@ -168,16 +168,16 @@ graph TD
 
 ---
 
-## 4. Pipeline de Dados
+## ⚙️ 4. Pipeline de Dados
 
 ### 4.1 Estrutura do Pipeline de ETL
 O pipeline de dados foi desenvolvido de forma modular em **2 Notebooks PySpark** que executam o ciclo completo de extração, limpeza, modelagem e persistência:
 
-1. **Notebook 1 — Ingestão e Sanitização (Bronze -> Silver):**
+4.1.1. **Notebook 1 — Ingestão e Sanitização (Bronze -> Silver):**
    * **Arquivo:** [`Etapa 1 - Limpeza e Padronização dos dados.ipynb`](./Etapa%201%20-%20Limpeza%20e%20Padronização%20dos%20dados.ipynb)
    * **Fluxo:** Leitura do Volume Unity Catalog -> Sanitização dos nomes das colunas -> Conversão de tipos -> Filtragem de escopo (`GASOLINA` e `ETANOL`) -> Deduplicação -> Gravação da tabela Delta `base_combustivel_silver`.
 
-2. **Notebook 2 — Analytics & Agregações (Silver -> Gold):**
+4.1.2. **Notebook 2 — Analytics & Agregações (Silver -> Gold):**
    * **Arquivo:** [`Etapa 2 - Analitica.ipynb`](./Etapa%202%20-%20Analitica.ipynb)
    * **Fluxo:** Leitura da tabela `base_combustivel_silver` -> Execução de queries analíticas com Window Functions e pivots -> Persistência das tabelas analíticas Delta `combustivel_variacao_gold`, `combustivel_paridade_gold` e `combustivel_bandeira_gold`.
 
@@ -202,13 +202,13 @@ df_gold_variacao_combustiveis.write \
 
 ---
 
-## 5. Qualidade de Dados
+## 🔍 5. Qualidade de Dados
 
 Para garantir que a camada analítica (Gold) receba apenas dados íntegros, confiáveis e coerentes, o pipeline realizou auditorias sobre **5 dimensões da Qualidade de Dados**:
 
 ### 5.1 Avaliação das Dimensões de Qualidade
 
-1. **Completude (Completeness):**
+5.1.1. **Completude (Completeness):**
    * *Diagnóstico na Bronze:* A coluna `Valor de Compra` possuía **3.038.685 registros nulos (100% de ausência)** nas amostras públicas da ANP. O campo `Complemento` apresentou 2.345.255 nulos e `Bairro` 14.489 nulos.
    * *Ação:* As colunas irrelevantes de endereço (`Nome da Rua`, `Numero Rua`, `Complemento`, `Cep`) foram removidas do escopo analítico. Para as colunas essenciais (`estado_sigla`, `produto`, `data_coleta`, `valor_venda`), exigiu-se 100% de preenchimento (`filter(col("valor_venda").isNotNull())`).
 
