@@ -1,7 +1,7 @@
 # MVP-pos-graduacao-PUC-Engenharia-de-Dados
 Repositório para o trabalho de MVP de Engenharia de Dados desenvolvido na plataforma Databricks.
 
-# Pipeline de Análise de Preços de Combustíveis no Varejo Nacional (Medallion Architecture)
+# ⛽ Pipeline de Análise de Preços de Combustíveis no Varejo Nacional
 
 [![Databricks](https://img.shields.io/badge/Databricks-Free%20Edition-red?logo=databricks)](https://databricks.com/)
 [![Apache Spark](https://img.shields.io/badge/Apache%20Spark-3.x-orange?logo=apachespark)](https://spark.apache.org/)
@@ -11,7 +11,7 @@ Repositório para o trabalho de MVP de Engenharia de Dados desenvolvido na plata
 ## 📌 Visão Geral do Projeto
 Este projeto consiste na implementação de um pipeline de dados *end-to-end* em ambiente de nuvem (**Databricks**) para ingestão, tratamento e modelagem do histórico de preços de combustíveis (Gasolina e Etanol) no Brasil, utilizando dados abertos fornecidos pela **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)**.
 
-O objetivo principal é transformar dados brutos não estruturados/semiestruturados em dados analíticos confiáveis, organizados em uma **Arquitetura Medalhão (Bronze, Silver e Gold)** sob o formato **Delta Lake**, respondendo a hipóteses estratégicas de precificação regional e paridade de mercado.
+O objetivo principal é transformar dados brutos em dados analíticos confiáveis, organizados em uma **Arquitetura Medalhão (Bronze, Silver e Gold)** sob o formato **Delta Lake**, respondendo a hipóteses estratégicas de precificação regional e paridade de mercado.
 
 ---
 
@@ -67,13 +67,17 @@ graph TD
 O pipeline está estruturado e dividido em **2 notebooks principais** que executam o ciclo completo da Arquitetura Medalhão:
 
 * 📄 **Etapa 1 (Bronze -> Silver):** Notebook responsável pela ingestão dos ficheiros brutos da ANP, validação do esquema (*schema enforcement*), conversão de tipos de dados, remoção de duplicados e normalização dos atributos geográficos e de estabelecimento.
-* 📄 **Etapa 2 (Silver -> Gold):** Notebook responsável pelo processamento analítico, utilizando PySpark SQL e *Window Functions* para calcular agregações temporais, variação de preços e paridade entre combustíveis, persistindo as tabelas finais prontas para BI.
+* 📄 **Etapa 2 (Silver -> Gold):** Notebook responsável pelo processamento analítico, calculando agregações temporais, variação de preços e paridade entre combustíveis, persistindo as tabelas finais prontas para BI, por ano/mês .
 
 ---
 
 ### 1. Ingestão e Carga na Camada Bronze
 - **Fonte de Dados:** Ficheiros no formato CSV contendo os registos de coletas semanais da ANP[cite: 3].
-- **Ações Realizadas:** Carga dos ficheiros brutos para o catálogo de dados, preservando a estrutura original e aplicando metadados de controlo (como data de ingestão e nome da fonte) para auditoria e linhagem de dados.
+- [![ANP Official](https://img.shields.io/badge/⛽_Fonte_Oficial-ANP_Gov.br-0056b3?logo=gov.br&logoColor=white)](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis)
+
+Os dados brutos utilizados neste projeto foram extraídos da página oficial de **Dados Abertos da ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)**, especificamente na seção da [Série Histórica de Preços de Combustíveis](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis). Para este estudo, foi delimitado o recorte temporal **a partir do ano de 2023** em diante.
+- **Origem: ** Arquivos extraídos de https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis?utm_source=gemini
+- **Ações Realizadas:** Carga dos ficheiros brutos para o catálogo de dados, preservando a estrutura original e aplicando metadados de controle (como data de ingestão e nome da fonte) para auditoria e linhagem de dados.
 
 ### 2. Tratamento e Higienização na Camada Silver (Etapa 1)
 - **Origem:** Tabela `base_combustivel_bronze`.
