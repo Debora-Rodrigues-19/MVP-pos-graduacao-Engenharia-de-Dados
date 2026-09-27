@@ -296,6 +296,8 @@ O pipeline de dados construído comprovou a hipótese inicial: o mercado de comb
 
 A estrutura Delta Lake entregue na camada **Gold** fornece a base ideal para alimentar relatórios em tempo real (Power BI ou Databricks SQL Warehouse), capacitando órgãos reguladores, distribuidoras e consumidores a tomarem decisões pautadas em dados consolidados.
 
+Como complemento dessa demanda, adicionei uma **Etapa 3**, com consultas prévias baseadas nas tabelas GOLD .
+
 ---
 
 ## 🎯 7. Autoavaliação do Projeto
