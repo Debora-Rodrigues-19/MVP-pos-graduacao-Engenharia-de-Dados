@@ -1,5 +1,5 @@
 # MVP-pos-graduacao-PUC-Engenharia-de-Dados
-Repositorio para trazer o trabalho de MVP de Engenharia de Dados feito no Databricks
+Repositório para o trabalho de MVP de Engenharia de Dados desenvolvido na plataforma Databricks.
 
 # Pipeline de Análise de Preços de Combustíveis no Varejo Nacional (Medallion Architecture)
 
@@ -11,7 +11,7 @@ Repositorio para trazer o trabalho de MVP de Engenharia de Dados feito no Databr
 ## 📌 Visão Geral do Projeto
 Este projeto consiste na implementação de um pipeline de dados *end-to-end* em ambiente de nuvem (**Databricks**) para ingestão, tratamento e modelagem do histórico de preços de combustíveis (Gasolina e Etanol) no Brasil, utilizando dados abertos fornecidos pela **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)**.
 
-O objetivo principal é transformar dados brutos não estruturados/semistruturados em dados analíticos confiáveis, organizados em uma **Arquitetura Medalhão (Bronze, Silver e Gold)** sob o formato **Delta Lake**, respondendo a hipóteses estratégicas de precificação regional e paridade de mercado.
+O objetivo principal é transformar dados brutos não estruturados/semiestruturados em dados analíticos confiáveis, organizados em uma **Arquitetura Medalhão (Bronze, Silver e Gold)** sob o formato **Delta Lake**, respondendo a hipóteses estratégicas de precificação regional e paridade de mercado.
 
 ---
 
@@ -39,20 +39,60 @@ O pipeline foi desenhado para processar os volumes históricos da ANP e responde
 
 O pipeline segue o padrão **Data Lakehouse** utilizando **Delta Lake** para garantir transações ACID, controle de esquema (*schema enforcement*) e alta performance de escrita/leitura.
 
-```text
-[ Fonte: ANP CSVs ]
-       │
-       ▼
- ┌───────────┐
- │   BRONZE  │  ---> Ingestão Raw (Arquivos brutos + Metadados de controle)
- └─────┬─────┘
-       │
-       ▼  (PySpark ETL / Cleansing & Normalization)
- ┌───────────┐
- │   SILVER  │  ---> Dados limpos, tipados, deduplicados e filtrados
- └─────┬─────┘
-       │
-       ▼  (Modeling & Aggregations / PySpark & SQL)
- ┌───────────┐
- │    GOLD   │  ---> Tabelas fato/dimensão agregadas e prontas para BI/SQL
- └───────────┘
+
+```mermaid
+graph TD
+    A["📄 Fonte: ANP CSVs"] --> B
+
+    subgraph Arquitetura Medalhão
+        B["🥉 Camada Bronze<br/><b>Ingestão Raw</b><br/><i>Arquivos brutos + Metadados</i>"]
+        
+        B -->|"PySpark ETL / Limpeza"| C
+        
+        C["🥈 Camada Silver<br/><b>Trusted Layer</b><br/><i>Dados limpos, tipados e deduplicados</i>"]
+        
+        C -->|"Modelagem & Agregações"| D
+        
+        D["🥇 Camada Gold<br/><b>Refined Layer</b><br/><i>Tabelas Fato/Dimensão para BI & SQL</i>"]
+    end
+
+    style A fill:#2d3748,stroke:#4a5568,color:#fff
+    style B fill:#1a202c,stroke:#718096,color:#fff
+    style C fill:#1a202c,stroke:#718096,color:#fff
+    style D fill:#1a202c,stroke:#718096,color:#fff
+```
+
+## ⚙️ Detalhamento das Etapas & Notebooks do Projeto
+
+O pipeline está estruturado e dividido em **2 notebooks principais** que executam o ciclo completo da Arquitetura Medalhão:
+
+* 📄 **Etapa 1 (Bronze -> Silver):** Notebook responsável pela ingestão dos ficheiros brutos da ANP, validação do esquema (*schema enforcement*), conversão de tipos de dados, remoção de duplicados e normalização dos atributos geográficos e de estabelecimento.
+* 📄 **Etapa 2 (Silver -> Gold):** Notebook responsável pelo processamento analítico, utilizando PySpark SQL e *Window Functions* para calcular agregações temporais, variação de preços e paridade entre combustíveis, persistindo as tabelas finais prontas para BI.
+
+---
+
+### 1. Ingestão e Carga na Camada Bronze
+- **Fonte de Dados:** Ficheiros no formato CSV contendo os registos de coletas semanais da ANP[cite: 3].
+- **Ações Realizadas:** Carga dos ficheiros brutos para o catálogo de dados, preservando a estrutura original e aplicando metadados de controlo (como data de ingestão e nome da fonte) para auditoria e linhagem de dados.
+
+### 2. Tratamento e Higienização na Camada Silver (Etapa 1)
+- **Origem:** Tabela `base_combustivel_bronze`.
+- **Limpeza e Padronização:**
+  - Aplicação de *schema enforcement* e conversão explícita de tipos de dados (datas, valores monetários para tipo decimal/float).
+  - Normalização de cadeias de caracteres (remoção de espaços desnecessários, uniformização de nomes de municípios, bairros e bandeiras).
+  - Tratamento de valores nulos e remoção de registos duplicados.
+- **Atributos Estruturados:** A tabela final `workspace.mvp-engenharia-dados.base_combustivel_silver` disponibiliza atributos organizados[cite: 3]:
+  - **Dimensão Geográfica:** `regiao_sigla`, `estado_sigla`, `municipio`, `bairro`[cite: 3].
+  - **Dimensão Estabelecimento:** `revenda`, `cnpj_revenda`, `bandeira`[cite: 3].
+  - **Dimensão Produto & Tempo:** `produto`, `data_coleta`, `ano_mes`, `ano`, `mes`[cite: 3].
+  - **Métricas Financeiras:** `valor_venda`, `valor_compra`, `unidade_medida`[cite: 3].
+
+### 3. Agregação e Modelagem na Camada Gold (Etapa 2)
+- **Origem:** `workspace.mvp-engenharia-dados.base_combustivel_silver`[cite: 3].
+- **Processamento Analytics:**
+  - Utilização de **PySpark SQL** e **Window Functions** (`pyspark.sql.window.Window`) para particionamento temporal e geográfico[cite: 3].
+  - Cálculo de métricas financeiras acumuladas e janelas deslizantes[cite: 3]:
+    - `avg` e `spark_round` para médias de preço de venda e compra[cite: 3].
+    - `min`, `max` e `stddev` para identificação de discrepâncias e volatilidade de preços[cite: 3].
+    - Função `lag` para apurar variações temporais de preços de venda entre períodos (MoM / WoW)[cite: 3].
+- **Destino:** Tabelas agregadas e otimizadas em formato Delta Lake na camada **Gold**, prontas para consumo por dashboards de BI (Power BI, Databricks SQL) e relatórios estratégicos[cite: 3].
