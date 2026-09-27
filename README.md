@@ -35,22 +35,25 @@ Os dados brutos foram extraídos do portal oficial de Dados Abertos da ANP, sele
 * **Formato:** Arquivos CSV (codificados em `ISO-8859-1`, separados por `;`).
 
 #### O que Cada Campo Representa:
-1. `Regiao - Sigla`: Região do país (`CO`, `N`, `NE`, `S`, `SE`).
-2. `Estado - Sigla`: Sigla do estado (27 UFs).
-3. `Municipio`: Nome do município da pesquisa.
-4. `Revenda`: Nome/Razão social do posto.
-5. `CNPJ da Revenda`: CNPJ do estabelecimento.
-6. `Nome da Rua`: Logradouro.
-7. `Numero Rua`: Número do imóvel.
-8. `Complemento`: Informações adicionais do endereço.
-9. `Bairro`: Bairro do posto.
-10. `Cep`: Código de Endereçamento Postal.
-11. `Produto`: Combustível pesquisado (`GASOLINA`, `GASOLINA ADITIVADA`, `ETANOL`, `DIESEL`, `DIESEL S10`, `GNV`).
-12. `Data da Coleta`: Data do registro no formato `DD/MM/AAAA`.
-13. `Valor de Venda`: Preço cobrado do consumidor final (texto com vírgula).
-14. `Valor de Compra`: Preço pago pelo posto à distribuidora (quando disponível).
-15. `Unidade de Medida`: Unidade do preço (ex: `R$ / litro`).
-16. `Bandeira`: Marca ou distribuidora ligada ao posto.
+
+| Campo / Atributo | Descrição e Valores Aceitos |
+| :--- | :--- |
+| `Regiao - Sigla` | Região do país (`CO`, `N`, `NE`, `S`, `SE`) |
+| `Estado - Sigla` | Sigla da Unidade da Federação (27 UFs) |
+| `Municipio` | Nome do município da pesquisa |
+| `Revenda` | Nome ou Razão Social do posto de combustível |
+| `CNPJ da Revenda` | CNPJ do estabelecimento revendedor |
+| `Nome da Rua` | Logradouro do endereço do posto |
+| `Numero Rua` | Número do local do estabelecimento |
+| `Complemento` | Informações adicionais do endereço |
+| `Bairro` | Bairro onde o posto está localizado |
+| `Cep` | Código de Endereçamento Postal (CEP) |
+| `Produto` | Combustível pesquisado (`GASOLINA`, `GASOLINA ADITIVADA`, `ETANOL`, `DIESEL`, `DIESEL S10`, `GNV`) |
+| `Data da Coleta` | Data do registro da amostragem no formato `DD/MM/AAAA` |
+| `Valor de Venda` | Preço cobrado do consumidor final (formato texto com vírgula) |
+| `Valor de Compra` | Preço pago pelo posto à distribuidora (quando disponível) |
+| `Unidade de Medida` | Unidade de comercialização do preço (ex: `R$ / litro`) |
+| `Bandeira` | Marca da distribuidora ou rede ligada ao posto |
 
 ---
 
