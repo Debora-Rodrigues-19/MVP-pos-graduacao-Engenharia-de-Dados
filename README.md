@@ -39,10 +39,10 @@ Os dados brutos foram extraídos da página oficial de Dados Abertos da ANP (*S�
 4. `Revenda`: Razão social do posto revendedor.
 5. `CNPJ da Revenda`: CNPJ formatado do estabelecimento.
 6. `Nome da Rua`: Logradouro do posto.
-7. `Numero Rua`: Número do endereço.
-8. `Complemento`: Complemento do endereço.
+7. `Numero Rua`: Número do endereço do posto.
+8. `Complemento`: Complemento do endereço do posto.
 9. `Bairro`: Bairro do posto.
-10. `Cep`: Código de Endereçamento Postal.
+10. `Cep`: Código de Endereçamento Postal do posto.
 11. `Produto`: Tipo de combustível (`GASOLINA`, `GASOLINA ADITIVADA`, `ETANOL`, `DIESEL`, `DIESEL S10`, `GNV`).
 12. `Data da Coleta`: Data no formato texto `DD/MM/AAAA`.
 13. `Valor de Venda`: Preço de venda ao consumidor final (texto com vírgula).
