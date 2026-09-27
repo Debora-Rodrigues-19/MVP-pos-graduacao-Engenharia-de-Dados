@@ -16,16 +16,6 @@ Este projeto tem como objetivo a construção de um **pipeline de dados end-to-e
 
 ---
 
-> 💡 **Evolução do Escopo & Pivot Técnico**
-> 
-> **Escopo Inicial:** A proposta original visava analisar a distribuição e suficiência das verbas governamentais repassadas aos municípios do Estado de Rondônia, correlacionando repasses financeiros com indicadores socioeconômicos (IDH, infraestrutura escolar, população em situação de rua, mobilidade urbana).
-> 
-> **Motivação do Pivot (Análise de Viabilidade Técnica):** Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma alta complexidade na harmonização dos dados. Responder à pergunta exigiria a integração de múltiplos eixos de desenvolvimento urbano (*Infraestrutura, Qualidade de Vida, Economia*) com fontes de **diferentes granularidades e domínios heterogêneos** (dados anuais, mensais, municipais e estaduais). Para evitar um cenário de *Scope Creep* e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão do escopo.
-> 
-> **Escopo Atualizado:** O pipeline foi redirecionado para a série histórica de combustíveis da ANP, permitindo construir um MVP *end-to-end* robusto no Databricks, cobrindo todo o ciclo de vida do dado (Bronze, Silver e Gold) com elevado rigor de tipagem, higienização, deduplicação e análise de janelas temporais.
-
----
-
 ### 1.2 Perguntas de Negócio
 O pipeline foi projetado para responder às seguintes perguntas analíticas estratégicas:
 
@@ -344,6 +334,15 @@ O trabalho cumpriu com êxito **100% das etapas planejadas** para a construção
 * Todas as **3 perguntas de negócio** foram respondidas com rigor quantitativo e discutidas no contexto econômico.
 
 ### 7.2 Dificuldades Encontradas
+
+> 💡 **Evolução do Escopo & Pivot Técnico**
+> 
+> **Escopo Inicial:** A proposta original visava analisar a distribuição e suficiência das verbas governamentais repassadas aos municípios do Estado de Rondônia, correlacionando repasses financeiros com indicadores socioeconômicos (IDH, infraestrutura escolar, população em situação de rua, mobilidade urbana).
+> 
+> **Motivação do Pivot (Análise de Viabilidade Técnica):** Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma alta complexidade na harmonização dos dados. Responder à pergunta exigiria a integração de múltiplos eixos de desenvolvimento urbano (*Infraestrutura, Qualidade de Vida, Economia*) com fontes de **diferentes granularidades e domínios heterogêneos** (dados anuais, mensais, municipais e estaduais). Para evitar um cenário de *Scope Creep* e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão do escopo.
+> 
+> **Escopo Atualizado:** O pipeline foi redirecionado para a série histórica de combustíveis da ANP, permitindo construir um MVP *end-to-end* robusto no Databricks, cobrindo todo o ciclo de vida do dado (Bronze, Silver e Gold) com elevado rigor de tipagem, higienização, deduplicação e análise de janelas temporais.
+
 1. **Pivot Técnico do Escopo Inicial:** A ideia original de correlacionar verbas de Rondônia com múltiplos eixos urbanos mostrou-se inviável devido à disparidade de granularidades e ausência de chaves de integração confiáveis nas bases municipais. O pivot para a base da ANP exigiu flexibilidade técnica e reorganização do planejamento.
 2. **Tratamento de Codificação e Tipagem:** A base bruta da ANP utilizava codificação de texto `ISO-8859-1` com separadores monetários em vírgula e datas no formato nacional. Foi necessário calibrar cuidadosamente o leitor Spark e funções de conversão (`regexp_replace`, `to_date`, `cast`) para evitar perdas de registros.
 3. **Limitações do Ambiente Gratuito (Databricks Free Edition):** O encerramento automático de clusters inativos exigiu a otimização das tarefas e garantia de persistência idempotente (`overwriteSchema`) no Unity Catalog.
