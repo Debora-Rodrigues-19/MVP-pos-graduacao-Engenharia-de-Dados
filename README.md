@@ -329,18 +329,19 @@ O trabalho cumpriu com êxito **100% das etapas planejadas** para a construção
 * Todas as **3 perguntas de negócio** foram respondidas com rigor quantitativo e discutidas no contexto econômico.
 
 ### 7.2 Dificuldades Encontradas
+💡 Evolução do Escopo & Pivot Técnico
 
-> 💡 **Evolução do Escopo & Pivot Técnico**
-> 
-> **Escopo Inicial:** A proposta original visava analisar a distribuição e suficiência das verbas governamentais repassadas aos municípios do Estado de Rondônia, correlacionando repasses financeiros com indicadores socioeconômicos (IDH, infraestrutura escolar, população em situação de rua, mobilidade urbana).
-> 
-> **Motivação do Pivot (Análise de Viabilidade Técnica):** Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma alta complexidade na harmonização dos dados. Responder à pergunta exigiria a integração de múltiplos eixos de desenvolvimento urbano (*Infraestrutura, Qualidade de Vida, Economia*) com fontes de **diferentes granularidades e domínios heterogêneos** (dados anuais, mensais, municipais e estaduais). Para evitar um cenário de *Scope Creep* e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão do escopo.
-> 
-> **Escopo Atualizado:** O pipeline foi redirecionado para a série histórica de combustíveis da ANP, permitindo construir um MVP *end-to-end* robusto no Databricks, cobrindo todo o ciclo de vida do dado (Bronze, Silver e Gold) com elevado rigor de tipagem, higienização, deduplicação e análise de janelas temporais.
+Escopo Inicial: A proposta original visava analisar a distribuição e a suficiência de repasses de verbas governamentais aos municípios do Estado de Rondônia, correlacionando indicadores financeiros com métricas socioeconômicas (IDH, infraestrutura escolar, população em situação de rua e mobilidade urbana).
 
-1. **Pivot Técnico do Escopo Inicial:** A ideia original de correlacionar verbas de Rondônia com múltiplos eixos urbanos mostrou-se inviável devido à disparidade de granularidades e ausência de chaves de integração confiáveis nas bases municipais. O pivot para a base da ANP exigiu flexibilidade técnica e reorganização do planejamento.
-2. **Tratamento de Codificação e Tipagem:** A base bruta da ANP utilizava codificação de texto `ISO-8859-1` com separadores monetários em vírgula e datas no formato nacional. Foi necessário calibrar cuidadosamente o leitor Spark e funções de conversão (`regexp_replace`, `to_date`, `cast`) para evitar perdas de registros.
-3. **Limitações do Ambiente Gratuito (Databricks Free Edition):** O encerramento automático de clusters inativos exigiu a otimização das tarefas e garantia de persistência idempotente (`overwriteSchema`) no Unity Catalog.
+Motivação do Pivot (Viabilidade Técnica): Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma altíssima complexidade na harmonização dos dados. Responder às perguntas de negócio exigia integrar múltiplos eixos de desenvolvimento urbano com fontes de granularidades distintas (dados anuais vs. mensais; recortes municipais vs. estaduais) e sem chaves diretas de integração. Para evitar o risco de Scope Creep e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão estratégica do escopo.
+
+Escopo Atualizado: O pipeline foi redirecionado para a série histórica de preços de combustíveis da ANP. Essa mudança permitiu construir um MVP robusto de ponta a ponta, cobrindo com precisão todo o ciclo de vida do dado (Bronze, Silver e Gold) com rigoroso tratamento de tipagem, higienização, deduplicação e análise de janelas temporais.
+
+🔧 Desafios na Ingestão e Tratamento de Dados (Encoding e Tipagem)
+A base bruta fornecida pela ANP utilizava codificação de texto ISO-8859-1 (Latin-1), separadores decimais no padrão brasileiro (vírgula) e datas em formato pt-BR. Foi necessário calibrar minuciosamente o leitor Spark e estruturar rotinas de conversão e limpeza (regexp_replace, to_date, cast) para evitar perda de dados ou contaminação por registros inválidos durante a passagem da camada Bronze para a Silver.
+
+☁️ Limitações do Ambiente Nuvem (Databricks Free Edition)
+A limitação do ambiente gratuito — em especial o encerramento automático do cluster após períodos de inatividade — exigiu um planejamento cuidadoso na execução dos notebooks. Para mitigar a perda de contexto e garantir a integridade dos dados, as rotinas de carga no Unity Catalog foram desenhadas de forma modular e idempotente (com uso de overwrite e manipulação controlada de esquemas).
 
 ### 7.3 Trabalhos Futuros
 1. **Orquestração Automatizada:** Implementar o agendamento automatizado das cargas utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
