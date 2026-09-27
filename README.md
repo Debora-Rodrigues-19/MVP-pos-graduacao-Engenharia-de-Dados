@@ -182,9 +182,19 @@ O pipeline de dados foi desenvolvido de forma modular em **2 Notebooks PySpark**
    * **Arquivo:** [`Etapa 1 - Limpeza e Padronização dos dados.ipynb`](./Etapa%201%20-%20Limpeza%20e%20Padronização%20dos%20dados.ipynb)
    * **Fluxo:** Leitura do Volume Unity Catalog -> Sanitização dos nomes das colunas -> Conversão de tipos -> Filtragem de escopo (`GASOLINA` e `ETANOL`) -> Deduplicação -> Gravação da tabela Delta `base_combustivel_silver`.
 
+
+![Print etapa 2 com save da Silver](dados-brutos/Print-save-tbl-silver.png)
+##### Descrição da imagem: Print do código que salva tbl na etapa silver
+
 4.1.2. **Notebook 2 — Analytics & Agregações (Silver -> Gold):**
    * **Arquivo:** [`Etapa 2 - Analitica.ipynb`](./Etapa%202%20-%20Analitica.ipynb)
    * **Fluxo:** Leitura da tabela `base_combustivel_silver` -> Execução de queries analíticas com Window Functions e pivots -> Persistência das tabelas analíticas Delta `combustivel_variacao_gold`, `combustivel_paridade_gold` e `combustivel_bandeira_gold`.
+
+![Print do Etapa 3 - tbl1](dados-brutos/Print-saida-tbl1-gold.png)
+##### Descrição da imagem: Print do código que processa etapa de tbl 1 gold
+
+![Print do Etapa 3 - tbl3](dados-brutos/Print-saida-tbl3-gold.png)
+##### Descrição da imagem: Print do código que processa etapa de tbl 3 gold
 
 ### 4.2 Persistência de Dados em Nuvem
 Os DataFrames resultantes foram salvos como tabelas gerenciadas em formato **Delta Lake** no catálogo `workspace.mvp-engenharia-dados` no Databricks Unity Catalog:
