@@ -20,14 +20,14 @@ Para trazer clareza a esse cenário, este projeto construiu um **pipeline de dad
 ### 1.2 Perguntas que Queremos Responder
 Para garantir que o pipeline entregasse valor real, ele foi desenhado focado em responder a três perguntas principais:
 
-1. **Variação no Tempo e no Espaço (MoM):** Como o preço médio da Gasolina e do Etanol mudou mês a mês em cada Estado (UF)?
+1. **Variação no Tempo e no Espaço:** Como o preço médio da Gasolina e do Etanol mudou mês a mês em cada Estado (UF)?
 2. **Qual Combustível Compensou Mais?** Qual foi a paridade média de preço entre Etanol e Gasolina ($\frac{\text{Preço Etanol}}{\text{Preço Gasolina}} \times 100$) por estado, considerando a regra prática de eficiência de 70%?
 3. **Quem Cobra Mais Variado?** Quais redes e bandeiras de postos (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentaram maior variação e instabilidade de preços em cada região?
 
 ---
 
 ### 1.3 De Onde Vieram os Dados?
-Os dados brutos foram extraídos do portal oficial de Dados Abertos da ANP, cobrindo o histórico semestral de pesquisas entre **2023/1 e 2026/1**.
+Os dados brutos foram extraídos do portal oficial de Dados Abertos da ANP, selecionando a cobertura histórica  semestral de pesquisas entre **2023/1 e 2026/1**.
 
 * **Volume de Dados:** 3.038.685 de registros.
 * **Quantidade de Colunas:** 16 atributos na base original.
