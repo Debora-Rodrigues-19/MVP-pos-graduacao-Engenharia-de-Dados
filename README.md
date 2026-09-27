@@ -13,7 +13,7 @@
 Abastecer o carro no Brasil pode custar muito diferente a depender de onde você está. O mercado varejista de combustíveis — focado aqui em **Gasolina Comum e Etanol** — é marcado por preços imprevisíveis e fortes diferenças regionais. Fatores como a distância das refinarias, impostos estaduais (ICMS), concorrência local e oscilações do petróleo no mercado internacional fazem com que os preços variem muito entre estados e marcas de postos.
 
 **Como resolver isso com dados?**
-Para trazer clareza a esse cenário, este projeto construiu um **pipeline de dados em nuvem (Databricks)** estruturado sob a **Arquitetura Medalhão (Delta Lake)**. O objetivo foi transformar mais de 3 milhões de registros brutos das pesquisas semanais da **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)** em tabelas analíticas prontas para orientar decisões estratégicas.
+Para trazer clareza a esse cenário, este projeto construiu um **pipeline de dados em nuvem (Databricks)** estruturado sob a **Arquitetura Medalhão**. O objetivo foi transformar mais de 3 milhões de registros brutos das pesquisas semanais da **ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis)** em tabelas analíticas prontas para orientar decisões estratégicas.
 
 ---
 
