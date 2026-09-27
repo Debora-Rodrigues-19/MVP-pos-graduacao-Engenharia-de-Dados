@@ -327,8 +327,3 @@ O encerramento automático de *clusters* inativos no ambiente gratuito exigiu a 
 1. **Orquestração Automatizada:** Agendar execuções periódicas do pipeline utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
 2. **Visualização Interativa:** Conectar as tabelas da camada Gold diretamente ao **Power BI** ou **Databricks SQL Dashboards**.
 3. **Modelagem Preditiva (ML):** Aplicar algoritmos de aprendizado de máquina (PySpark MLlib) para prever tendências e oscilações de preços nas UFs com 30 dias de antecedência.
-
-### 7.3 Trabalhos Futuros
-1. **Orquestração Automatizada:** Implementar o agendamento automatizado das cargas utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
-2. **Visualização Interativa:** Desenvolver dashboards dinâmicos no **Databricks SQL** ou **Power BI** conectados diretamente às tabelas da camada Gold via conector Databricks.
-3. **Modelagem Preditiva (ML):** Aplicar algoritmos de aprendizado de máquina (PySpark MLlib / Prophet) sobre a camada Gold para prever variações de preços de combustíveis nas UFs com 30 dias de antecedência.
