@@ -19,12 +19,9 @@ Este projeto tem como objetivo a construção de um **pipeline de dados end-to-e
 ### 1.2 Perguntas de Negócio
 O pipeline foi projetado para responder às seguintes perguntas analíticas estratégicas:
 
-1. **Variação Temporal e Geográfica:**
-   Qual é a variação média mensal do preço de venda da Gasolina Comum e do Etanol discriminada por Estado (UF) e período (Mês/Ano), medindo a evolução MoM (*Month-over-Month*)?
-3. **Paridade de Mercado (Etanol vs. Gasolina):**
-   Qual é a razão percentual ($\frac{\text{Preço Médio Etanol}}{\text{Preço Médio Gasolina}} \times 100$) por UF e qual a recomendação de viabilidade econômica ao consumidor com base no limiar de eficiência de 70%?
-5. **Dispersão e Volatilidade por Bandeiras:**
-   Quais distribuidoras e bandeiras (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentam maior volatilidade (desvio padrão e amplitude de preço) por região geográfica?
+1. **Variação Temporal e Geográfica:**Qual é a variação média mensal do preço de venda da Gasolina Comum e do Etanol discriminada por Estado (UF) e período (Mês/Ano), medindo a evolução MoM (*Month-over-Month*)?
+3. **Paridade de Mercado (Etanol vs. Gasolina):**Qual é a razão percentual ($\frac{\text{Preço Médio Etanol}}{\text{Preço Médio Gasolina}} \times 100$) por UF e qual a recomendação de viabilidade econômica ao consumidor com base no limiar de eficiência de 70%?
+5. **Dispersão e Volatilidade por Bandeiras:**Quais distribuidoras e bandeiras (ex: Vibra/BR, Shell/Raízen, Ipiranga, Bandeira Branca) apresentam maior volatilidade (desvio padrão e amplitude de preço) por região geográfica?
 
 ---
 
