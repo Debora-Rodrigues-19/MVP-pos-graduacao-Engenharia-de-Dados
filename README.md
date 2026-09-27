@@ -204,134 +204,129 @@ df_gold_variacao_combustiveis.write \
 
 ## 🔍 5. Qualidade de Dados
 
-Para garantir que a camada analítica (Gold) receba apenas dados íntegros, confiáveis e coerentes, o pipeline realizou auditorias sobre **5 dimensões da Qualidade de Dados**:
+Para garantir que a camada analítica (Gold) recebesse apenas dados íntegros, confiáveis e coerentes, auditamos o conjunto bruto sob **5 pilares de qualidade de dados**:
 
-### 5.1 Avaliação das Dimensões de Qualidade
-
-5.1.1. **Completude (Completeness):**
-   * *Diagnóstico na Bronze:* A coluna `Valor de Compra` possuía **3.038.685 registros nulos (100% de ausência)** nas amostras públicas da ANP. O campo `Complemento` apresentou 2.345.255 nulos e `Bairro` 14.489 nulos.
-   * *Ação:* As colunas irrelevantes de endereço (`Nome da Rua`, `Numero Rua`, `Complemento`, `Cep`) foram removidas do escopo analítico. Para as colunas essenciais (`estado_sigla`, `produto`, `data_coleta`, `valor_venda`), exigiu-se 100% de preenchimento (`filter(col("valor_venda").isNotNull())`).
-
-2. **Consistência (Consistency):**
-   * *Diagnóstico:* Colunas de texto continham espaços nas extremidades e inconsistência de caixa (ex: `" Ipiranga "`, `"gasolina"`). Atributos numéricos e de data estavam tipados genericamente como `string`.
-   * *Ação:* Aplicação de `trim()` e `upper()` em todas as variáveis categóricas. Conversão da coluna `Data da Coleta` do formato `DD/MM/AAAA` para o tipo `DateType` em padrão ISO (`AAAA-MM-DD`). Substituição do separador decimal de vírgula por ponto (`regexp_replace(col("Valor de Venda"), ",", ".")`) e conversão para `DecimalType(10,3)`.
-
-3. **Unicidade (Uniqueness):**
-   * *Diagnóstico:* Foram identificados **9.129 registros exatamente duplicados** no conjunto bruto unificado.
-   * *Ação:* Execução da operação de deduplicação `dropDuplicates()`, eliminando ambiguidades e contagens duplicadas.
-
-4. **Acurácia (Accuracy):**
-   * *Diagnóstico:* Presença de produtos fora do foco da pesquisa (ex: `DIESEL S10`, `GNV`) e valores de venda nulos ou zerados.
-   * *Ação:* Filtragem estrita dos registros de interesse mantendo apenas `GASOLINA` (Comum) e `ETANOL` com valores numéricos de venda estritamente positivos.
-
-5. **Outliers:**
-   * *Diagnóstico:* Verificação de discrepâncias extremas nos preços de venda.
-   * *Ação:* Utilização da função estatística `stddev()` e cálculo de amplitudes (`max - min`) na camada Gold para isolar discrepâncias e identificar postos com preços fora da curva de mercado.
+1. **Completude (Dados Faltantes):** 
+   * *Diagnóstico:* A coluna `Valor de Compra` estava 100% vazia nos dados públicos da ANP. O campo `Complemento` e dados detalhados de endereço tinham alta proporção de nulos.
+   * *Ação:* Removemos colunas irrelevantes de endereço (`Nome da Rua`, `Numero Rua`, `Complemento`, `Cep`) e garantimos 100% de preenchimento nos campos essenciais (`estado_sigla`, `produto`, `data_coleta`, `valor_venda`).
+2. **Padronização (Consistência):** 
+   * *Diagnóstico:* Variáveis de texto apresentavam inconsistência de caixa e espaços extras (ex: `" Ipiranga "`, `"gasolina"`). Preços e datas estavam tipados como texto em padrão brasileiro (vírgula decimal e formato `DD/MM/AAAA`).
+   * *Ação:* Aplicamos `trim()` e `upper()` em todas as categóricas. Convertemos as datas para `DateType` (`AAAA-MM-DD`) e tratamos os preços com `regexp_replace()` para substituição de vírgula por ponto, convertendo para `DecimalType(10,3)`.
+3. **Eliminação de Duplicatas (Unicidade):** 
+   * *Diagnóstico:* Identificamos **9.129 registros exatamente duplicados** na base bruta.
+   * *Ação:* Executamos a deduplicação com `dropDuplicates()`, garantindo amostragens únicas.
+4. **Foco no Objetivo (Acurácia):** 
+   * *Diagnóstico:* Presença de combustíveis fora do escopo do estudo (`DIESEL`, `GNV`) e preços zerados.
+   * *Ação:* Filtramos estritamente os produtos `GASOLINA` e `ETANOL` com preços de venda positivos.
+5. **Acompanhamento de Extremos (Outliers):** 
+   * *Diagnóstico:* Necessidade de isolar discrepâncias extremas nos valores de venda.
+   * *Ação:* Calculamos o desvio padrão (`stddev`) e amplitudes de preço na camada Gold para identificar distorções operacionais nos postos.
 
 ---
 
-### 5.2 Métrica Comparativa do Volume de Dados
+### Resumo da Transformação dos Dados
 
-| Estágio do Pipeline | Número de Registros | Número de Colunas | Descrição das Transformações |
+| Estágio do Pipeline | Registros | Colunas | O que mudou? |
 | :--- | :---: | :---: | :--- |
-| **Camada Bronze (Raw)** | 3.038.685 | 16 | Carga bruta dos arquivos CSV semestrais sem alterações |
-| **Camada Silver (Trusted)** | **1.455.246** | **15** | Remoção de 9.129 duplicados, descarte de produtos fora do escopo (`DIESEL`, `GNV`), remoção de nulos em `valor_venda`, tipagem e criação de `ano_mes`, `ano` e `mes` |
+| **Camada Bronze (Bruto)** | 3.038.685 | 16 | Carga bruta dos arquivos CSV semestrais da ANP sem alterações. |
+| **Camada Silver (Limpo)** | **1.455.246** | **15** | Remoção de 9.129 duplicatas, descarte de produtos fora do escopo, tratamento de nulos, tipagem e criação das colunas `ano_mes`, `ano` e `mes`. |
 
 ---
 
-## 6. Análise de Dados
+## 📊 6. Análises e Resultados Encontrados
 
-### 6.1 Respostas às Perguntas de Negócio
+### 6.1 Respondendo às Perguntas de Negócio
 
-#### Pergunta 1: Variação Temporal e Geográfica do Preço Médio (MoM)
-> *Qual é a variação média do preço da gasolina comum e etanol por Estado (UF) e Mês/Ano?*
+#### 🟢 Pergunta 1: Como os preços variaram ao longo dos meses em cada Estado?
+*Utilizamos Window Functions combinadas com a função `lag` para apurar a evolução mensal do preço médio e a variação MoM (Month-over-Month).*
 
-A análise utiliza Window Functions (`Window.partitionBy("estado_sigla", "produto").orderBy("ano_mes")`) combinadas com a função `lag` para apurar a evolução mensal do preço médio:
+##### Amostra do Resultado (Tabela `combustivel_variacao_gold` - Estado do Acre):
 
-##### Amostra do Resultado Analítico (Tabela `combustivel_variacao_gold` - Estado do Acre):
-
-| `estado_sigla` | `produto` | `ano_mes` | `preco_medio` (R$) | `preco_mes_anterior` (R$) | `variacao_percentual` (%) |
+| Estado (`estado_sigla`) | Combustível (`produto`) | Período (`ano_mes`) | Preço Médio (`preco_medio`) | Mês Anterior (`preco_mes_anterior`) | Variação MoM (`variacao_percentual`) |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| AC | ETANOL | 2023-01 | R$ 4,367 | NULL | NULL |
+| AC | ETANOL | 2023-01 | R$ 4,367 | - | - |
 | AC | ETANOL | 2023-02 | R$ 4,438 | R$ 4,367 | +1,63% |
 | AC | ETANOL | 2023-03 | R$ 4,439 | R$ 4,438 | +0,02% |
 | AC | ETANOL | 2023-04 | R$ 4,426 | R$ 4,439 | -0,29% |
 | AC | ETANOL | 2023-05 | R$ 4,790 | R$ 4,426 | **+8,22%** |
 | AC | ETANOL | 2023-06 | R$ 4,777 | R$ 4,790 | -0,27% |
-| AC | ETANOL | 2023-07 | R$ 4,832 | R$ 4,777 | +1,15% |
 
-* **Discussão dos Resultados:** O mês de Maio/2023 apresentou um forte pico de elevação no preço do Etanol no Acre (+8,22%), refletindo impactos do retorno de impostos federais sobre combustíveis e entressafra de cana-de-açúcar. A análise via janela deslizante permite que gestores identifiquem meses atípicos de inflação de preços em cada estado.
+* **O que o dado revela:** Em maio de 2023, o preço do Etanol no Acre sofreu um salto de **+8,22%** em um único mês. A análise por janela deslizante permitiu correlacionar essa alta atípica com o retorno da reoneração de impostos federais e a entressafra da cana-de-açúcar, fornecendo rastreabilidade para diagnósticos econômicos regionais.
 
 ---
 
-#### Pergunta 2: Paridade de Mercado (Etanol vs. Gasolina) por UF
-> *Qual é a razão percentual ($\frac{\text{Preço Etanol}}{\text{Preço Gasolina}} \times 100$) por UF para identificação de viabilidade econômica ao consumidor?*
-
-O rendimento energético médio do Etanol em relação à Gasolina é de aproximadamente 70%. Quando a paridade fica **abaixo de 70%**, compensa abastecer com **Etanol**; acima desse patamar, a **Gasolina** torna-se mais vantajosa.
+#### 🟢 Pergunta 2: Em quais estados valeu a pena abastecer com Etanol?
+*Considerando a eficiência média do Etanol equivalente a 70% da Gasolina, avaliamos a razão de preços por estado. Quando a paridade fica **igual ou abaixo de 70%**, o **Etanol** é a opção mais vantajosa.*
 
 ##### Resultado da Paridade por Estado (Tabela `combustivel_paridade_gold`):
 
-| `estado_sigla` | `preco_medio_etanol` | `preco_medio_gasolina` | `paridade_percentual` (%) | `recomendacao` |
+| Estado (`estado_sigla`) | Média Etanol (`preco_medio_etanol`) | Média Gasolina (`preco_medio_gasolina`) | Paridade (`paridade_percentual`) | Recomendação (`recomendacao`) |
 | :---: | :---: | :---: | :---: | :---: |
 | **MT** | R$ 3,855 | R$ 6,038 | **63,84%** | Compensa ETANOL |
 | **MS** | R$ 3,949 | R$ 5,954 | **66,33%** | Compensa ETANOL |
 | **SP** | R$ 3,874 | R$ 5,827 | **66,49%** | Compensa ETANOL |
-| **DF** | R$ 4,124 | R$ 6,004 | **68,69%** | Compensa ETANOL |
 | **GO** | R$ 4,111 | R$ 5,979 | **68,77%** | Compensa ETANOL |
-| **PR** | R$ 4,215 | R$ 6,092 | **69,19%** | Compensa ETANOL |
 | **MG** | R$ 4,063 | R$ 5,852 | **69,43%** | Compensa ETANOL |
 | **AM** | R$ 4,916 | R$ 6,828 | **72,00%** | Compensa GASOLINA |
 | **AC** | R$ 5,110 | R$ 7,088 | **72,10%** | Compensa GASOLINA |
 | **ES** | R$ 4,451 | R$ 6,039 | **73,71%** | Compensa GASOLINA |
 
-* **Discussão dos Resultados:** Os estados produtores de cana-de-açúcar do Centro-Oeste e Sudeste (MT, MS, SP, DF, GO, PR e MG) apresentam paridade **abaixo de 70%**, tornando o Etanol a opção economicamente superior para veículos flex. Já nos estados da Região Norte e em partes do Leste (AM, AC, ES), custos logísticos de transporte encarecem o Etanol, tornando a Gasolina mais vantajosa para o consumidor.
+* **O que o dado revela:** Nos estados produtores das regiões Centro-Oeste e Sudeste (MT, MS, SP, GO e MG), a paridade manteve-se abaixo dos 70%, consolidando o **Etanol** como escolha economicamente superior. Em contrapartida, nas regiões Norte e no Espírito Santo, gargalos logísticos e custos de frete encarecem o Etanol, tornando a **Gasolina** a opção mais rentável.
 
 ---
 
-#### Pergunta 3: Dispersão e Volatilidade por Bandeira e Região Geográfica
-> *Quais distribuidoras/bandeiras apresentam maior volatilidade e desvio padrão de preços por região?*
+#### 🟢 Pergunta 3: Qual a diferença de preço entre as marcas de postos?
+*Analisamos a volatilidade e a amplitude (preço máximo menos preço mínimo) das distribuidoras em cada região geográfica.*
 
-##### Amostra da Dispersão de Preços no Centro-Oeste (Tabela `combustivel_bandeira_gold`):
+##### Amostra do Centro-Oeste (Tabela `combustivel_bandeira_gold`):
 
-| `regiao_sigla` | `bandeira` | `total_pesquisas` | `preco_minimo` | `preco_maximo` | `amplitude_variacao_rs` | `desvio_padrao_preco` |
+| Região (`regiao_sigla`) | Bandeira (`bandeira`) | Pesquisas (`total_pesquisas`) | Menor Preço (`preco_minimo`) | Maior Preço (`preco_maximo`) | Amplitude (`amplitude_variacao_rs`) | Desvio Padrão (`desvio_padrao_preco`) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | CO | VIBRA | 21.641 | R$ 2,75 | R$ 7,55 | **R$ 4,80** | 1,106 |
 | CO | BRANCA | 46.715 | R$ 2,69 | R$ 7,49 | **R$ 4,80** | 1,074 |
 | CO | RAIZEN | 13.133 | R$ 2,69 | R$ 7,39 | **R$ 4,70** | 1,100 |
 | CO | IPIRANGA | 24.019 | R$ 2,67 | R$ 7,29 | **R$ 4,62** | 1,087 |
-| CO | ALE | 2.015 | R$ 3,09 | R$ 7,29 | **R$ 4,20** | 1,037 |
 
-* **Discussão dos Resultados:** Postos de Bandeira Branca e grande distribuidores (Vibra e Raízen) na região Centro-Oeste exibem amplitude de preço de até **R$ 4,80 por litro** e desvio padrão acima de **1,07**. Essa elevada variabilidade deve-se ao choque de concorrência entre áreas urbanas centrais e postos isolados em rodovias ou municípios do interior com menor densidade de oferta.
+* **O que o dado revela:** Tanto postos independentes ("Bandeira Branca") quanto grandes distribuidoras (Vibra e Raízen) na região Centro-Oeste apresentaram variação de até **R$ 4,80 por litro** e desvio padrão elevado (acima de 1,07). Isso demonstra uma forte dispersão motivada pela concorrência acirrada em zonas urbanas em contraste com postos isolados em rodovias.
 
 ---
 
 ### 6.2 Conclusão Integrada de Negócio
-O pipeline de dados desenvolvido comprovou a hipótese de que o mercado de combustíveis brasileiro possui forte dependência regional e alta dispersão. As tabelas analíticas geradas na camada **Gold** oferecem a infraestrutura ideal para alimentar dashboards em tempo real (Power BI ou Databricks SQL Warehouse), capacitando distribuidores, órgãos reguladores (ANP) e consumidores finais a tomar decisões fundamentadas em dados.
+O pipeline de dados construído comprovou a hipótese inicial: o mercado de combustíveis no Brasil é fortemente marcado por assimetria regional e alta amplitude de preços. 
+
+A estrutura Delta Lake entregue na camada **Gold** fornece a base ideal para alimentar relatórios em tempo real (Power BI ou Databricks SQL Warehouse), capacitando órgãos reguladores, distribuidoras e consumidores a tomarem decisões pautadas em dados consolidados.
 
 ---
 
-## 7. Autoavaliação
+## 🎯 7. Autoavaliação do Projeto
 
 ### 7.1 Atingimento dos Objetivos
-O trabalho cumpriu com êxito **100% das etapas planejadas** para a construção de um Produto Mínimo Viável (MVP) em nuvem:
-* A infraestrutura de nuvem no **Databricks Free Edition** foi configurada do zero.
-* O pipeline de dados cobriu do dado bruto à camada analítica em uma **Arquitetura Medalhão (Delta Lake)**.
-* Todas as **3 perguntas de negócio** foram respondidas com rigor quantitativo e discutidas no contexto econômico.
+**Sim, 100% dos objetivos do MVP foram atingidos com êxito:**
+* A infraestrutura de nuvem no **Databricks Free Edition** foi configurada e integrada do zero.
+* O fluxo de engenharia cobriu do dado bruto à camada analítica sob a **Arquitetura Medalhão (Delta Lake)**.
+* As **3 perguntas de negócio** foram respondidas com validação técnica, estatística e discussão contextualizada.
+
+---
 
 ### 7.2 Dificuldades Encontradas
-💡 Evolução do Escopo & Pivot Técnico
 
-Escopo Inicial: A proposta original visava analisar a distribuição e a suficiência de repasses de verbas governamentais aos municípios do Estado de Rondônia, correlacionando indicadores financeiros com métricas socioeconômicas (IDH, infraestrutura escolar, população em situação de rua e mobilidade urbana).
+💡 **Evolução do Escopo & Pivot Técnico**
+* **Escopo Inicial:** A proposta original visava analisar a distribuição e suficiência de verbas governamentais aos municípios do Estado de Rondônia, correlacionando repasses financeiros com indicadores socioeconômicos (IDH, infraestrutura escolar, população em situação de rua, mobilidade urbana).
+* **Motivação do Pivot:** Durante o mapeamento das fontes, identificou-se alta complexidade na harmonização das bases. Responder ao problema exigia integrar fontes de granularidades heterogêneas (dados anuais vs. mensais; municipais vs. estaduais) sem chaves diretas de ligação. Para evitar o acúmulo de atrasos (*Scope Creep*) e garantir um pipeline funcional e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão do escopo.
+* **Escopo Atualizado:** O pipeline foi redirecionado para a série histórica da ANP, permitindo construir um MVP robusto de ponta a ponta no Databricks, cobrindo o ciclo de vida do dado (Bronze, Silver e Gold) com tratamento de tipagem, higienização, deduplicação e análise de janelas temporais.
 
-Motivação do Pivot (Viabilidade Técnica): Durante a fase de desenho da arquitetura e mapeamento das fontes, identificou-se uma altíssima complexidade na harmonização dos dados. Responder às perguntas de negócio exigia integrar múltiplos eixos de desenvolvimento urbano com fontes de granularidades distintas (dados anuais vs. mensais; recortes municipais vs. estaduais) e sem chaves diretas de integração. Para evitar o risco de Scope Creep e garantir a entrega de um pipeline funcional, performático e confiável sob a Arquitetura Medalhão no Databricks, optou-se pela revisão estratégica do escopo.
+🔧 **Tratamento de Codificação e Tipagem**
+A base bruta da ANP utilizava codificação de texto *ISO-8859-1*, separadores monetários em vírgula e datas no formato pt-BR. Foi necessário calibrar cuidadosamente o leitor Spark e funções de conversão (`regexp_replace`, `to_date`, `cast`) para evitar perda de registros.
 
-Escopo Atualizado: O pipeline foi redirecionado para a série histórica de preços de combustíveis da ANP. Essa mudança permitiu construir um MVP robusto de ponta a ponta, cobrindo com precisão todo o ciclo de vida do dado (Bronze, Silver e Gold) com rigoroso tratamento de tipagem, higienização, deduplicação e análise de janelas temporais.
+☁️ **Limitações do Ambiente Nuvem (Databricks Free Edition)**
+O encerramento automático de *clusters* inativos no ambiente gratuito exigiu a otimização das tarefas e a garantia de persistência idempotente (`overwriteSchema`) no Unity Catalog.
 
-🔧 Desafios na Ingestão e Tratamento de Dados (Encoding e Tipagem)
-A base bruta fornecida pela ANP utilizava codificação de texto ISO-8859-1 (Latin-1), separadores decimais no padrão brasileiro (vírgula) e datas em formato pt-BR. Foi necessário calibrar minuciosamente o leitor Spark e estruturar rotinas de conversão e limpeza (regexp_replace, to_date, cast) para evitar perda de dados ou contaminação por registros inválidos durante a passagem da camada Bronze para a Silver.
+---
 
-☁️ Limitações do Ambiente Nuvem (Databricks Free Edition)
-A limitação do ambiente gratuito — em especial o encerramento automático do cluster após períodos de inatividade — exigiu um planejamento cuidadoso na execução dos notebooks. Para mitigar a perda de contexto e garantir a integridade dos dados, as rotinas de carga no Unity Catalog foram desenhadas de forma modular e idempotente (com uso de overwrite e manipulação controlada de esquemas).
+### 7.3 Trabalhos Futuros
+1. **Orquestração Automatizada:** Agendar execuções periódicas do pipeline utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
+2. **Visualização Interativa:** Conectar as tabelas da camada Gold diretamente ao **Power BI** ou **Databricks SQL Dashboards**.
+3. **Modelagem Preditiva (ML):** Aplicar algoritmos de aprendizado de máquina (PySpark MLlib) para prever tendências e oscilações de preços nas UFs com 30 dias de antecedência.
 
 ### 7.3 Trabalhos Futuros
 1. **Orquestração Automatizada:** Implementar o agendamento automatizado das cargas utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
