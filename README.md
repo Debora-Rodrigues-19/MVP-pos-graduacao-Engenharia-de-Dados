@@ -86,32 +86,27 @@ df_base_combustivel_brasil = spark.read \
 ### 3.1 Arquitetura Medalhão (Lakehouse)
 A modelagem dos dados adota o padrão **Arquitetura Medalhão** sobre a tecnologia **Delta Lake**, dividida em três camadas incrementais:
 
+
 ```mermaid
 graph TD
-    A["📄 Fonte de Dados Brutos<br/>CSVs da ANP em Volume Unity Catalog"] --> B
+    A["📄 Fonte: ANP CSVs"] --> B
 
-    subgraph Arquitetura Medalhão (Delta Lake / Databricks)
-        B["🥉 Camada Bronze<br/><b>Ingestão Raw</b><br/><i>Tabela base_combustivel_bronze</i><br/>Arquivos brutos intactos"]
+    subgraph Arquitetura Medalhão
+        B["🥉 Camada Bronze<br/><b>Ingestão Raw</b><br/><i>Arquivos brutos + Metadados</i>"]
         
-        B -->|"PySpark ETL / Limpeza & Tipagem"| C
+        B -->|"PySpark ETL / Limpeza"| C
         
-        C["🥈 Camada Silver<br/><b>Trusted Layer</b><br/><i>Tabela base_combustivel_silver</i><br/>Dados limpos, tipados e deduplicados"]
+        C["🥈 Camada Silver<br/><b>Trusted Layer</b><br/><i>Dados limpos, tipados e deduplicados</i>"]
         
-        C -->|"Modelagem Analytics & Janelas Móveis"| D1
-        C -->|"Pivot & Razão de Paridade"| D2
-        C -->|"Estatística Descritiva & Dispersão"| D3
+        C -->|"Modelagem & Agregações"| D
         
-        D1["🥇 Camada Gold 1<br/><b>combustivel_variacao_gold</b><br/>Preço médio e Variação MoM"]
-        D2["🥇 Camada Gold 2<br/><b>combustivel_paridade_gold</b><br/>Paridade Etanol x Gasolina"]
-        D3["🥇 Camada Gold 3<br/><b>combustivel_bandeira_gold</b><br/>Volatilidade por Bandeira e Região"]
+        D["🥇 Camada Gold<br/><b>Refined Layer</b><br/><i>Tabelas Fato/Dimensão para BI & SQL</i>"]
     end
 
     style A fill:#2d3748,stroke:#4a5568,color:#fff
-    style B fill:#744210,stroke:#d69e2e,color:#fff
-    style C fill:#4a5568,stroke:#cbd5e0,color:#fff
-    style D1 fill:#1a202c,stroke:#3182ce,color:#fff
-    style D2 fill:#1a202c,stroke:#3182ce,color:#fff
-    style D3 fill:#1a202c,stroke:#3182ce,color:#fff
+    style B fill:#1a202c,stroke:#718096,color:#fff
+    style C fill:#1a202c,stroke:#718096,color:#fff
+    style D fill:#1a202c,stroke:#718096,color:#fff
 ```
 
 ---
