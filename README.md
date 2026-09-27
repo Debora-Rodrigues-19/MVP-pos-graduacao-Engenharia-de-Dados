@@ -325,7 +325,7 @@ O encerramento automático de *clusters* inativos no ambiente gratuito exigiu a 
 
 ---
 
-### 7.3 Trabalhos Futuros
+### 🔮 7.3 Trabalhos Futuros
 1. **Orquestração Automatizada:** Agendar execuções periódicas do pipeline utilizando **Databricks Workflows** ou **Delta Live Tables (DLT)**.
 2. **Visualização Interativa:** Conectar as tabelas da camada Gold diretamente ao **Power BI** ou **Databricks SQL Dashboards**.
 3. **Modelagem Preditiva (ML):** Aplicar algoritmos de aprendizado de máquina (PySpark MLlib) para prever tendências e oscilações de preços nas UFs com 30 dias de antecedência.
