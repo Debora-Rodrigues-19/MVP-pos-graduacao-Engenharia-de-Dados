@@ -99,8 +99,8 @@ graph TD
     style D fill:#1a202c,stroke:#718096,color:#fff
 ```
 
-![Print do Catalog com os dados brutos (laranja) e dados silver (verde) e dados para análise (gold)](./dados-brutos/Print%20Databricks%20(2).png)
-
+![Print do Catalog com os dados brutos (laranja) e dados silver (verde) e dados gold (azul)](./dados-brutos/Print%20Databricks%20(2).png)
+##### Descrição da imagem: Print do *Databricks Catalog* com os dados brutos (em laranja) e dados silver (em verde) e dados gold (em azul).
 ---
 
 ### 3.2 Catálogo de Dados Transcrito
